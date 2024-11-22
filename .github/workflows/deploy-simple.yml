@@ -65,4 +65,4 @@ jobs:
           app-name: ${{ env.app-service-name }}
           slot-name: production
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: ${{ env.working-directory }}/build/standalone
+          package: ${{ env.working-directory }}/build/standalone/build
