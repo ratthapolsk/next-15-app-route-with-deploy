@@ -39,5 +39,5 @@ jobs:
         with:
           app-name: ${{ env.app-service-name }}
           slot-name: "Production"
-          publish-profile: ${{ env.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+          publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
           package: ./build/standalone # Ensure this path is correct
