@@ -1,0 +1,46 @@
+name: "Deploy With Docker"
+
+on:
+  workflow_dispatch:
+
+env:
+  working-directory: .
+  resource-group: my-resource-group
+  app-service-name: my-app-service-name
+  APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Build Docker image with Docker Compose
+        run: docker-compose build
+
+      - name: Tag Docker image
+        run: docker tag ${{ env.app-service-name }}:latest ${{ env.DOCKER_USERNAME }}/${{ env.app-service-name }}:latest
+
+      - name: Push Docker image to Docker Hub
+        run: docker push ${{ env.DOCKER_USERNAME }}/${{ env.app-service-name }}:latest
+
+      - name: "Deploy to Azure Web App"
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.app-service-name }}
+          slot-name: "Production"
+          publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
+          images: ${{ env.DOCKER_USERNAME }}/${{ env.app-service-name }}:latest
