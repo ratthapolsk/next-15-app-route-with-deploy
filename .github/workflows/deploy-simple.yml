@@ -9,7 +9,7 @@ env:
   APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }} # Ensure this secret is set on GitHub Actions
 
 jobs:
-  build:
+  builddeploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -61,7 +61,7 @@ jobs:
       - name: Move downloaded files to the correct directory
         run: |
           mkdir -p ${{ env.working-directory }}/build/standalone
-          mv standalone/* ${{ env.working-directory }}/build/standalone/
+          mv ${{ env.working-directory }}/standalone/* ${{ env.working-directory }}/build/standalone/
         working-directory: ${{ env.working-directory }}
 
       - name: List downloaded directory contents
