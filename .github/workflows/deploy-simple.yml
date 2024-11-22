@@ -13,9 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x" # Ensure this is the desired Node.js version
@@ -29,17 +30,19 @@ jobs:
         run: |
           pnpm install
           pnpm run build
-          mv ./build/static ./build/standalone/build
-          mv ./public ./build/standalone
+          mv ${{ env.working-directory }}/build/static ${{ env.working-directory }}/build/standalone/build
+          mv ${{ env.working-directory }}/public ${{ env.working-directory }}/build/standalone
+        working-directory: ${{ env.working-directory }}
 
       - name: List build directory contents
-        run: ls -R ./build
+        run: ls -R ${{ env.working-directory }}/build
+        working-directory: ${{ env.working-directory }}
 
-      - name: Upload artifact for deployment job
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: webapp
-          path: ${{ env.working-directory }}/publish
+          path: ${{ env.working-directory }}/build/standalone
           retention-days: 1
 
   deploy:
@@ -47,18 +50,19 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Download artifact from build job
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: webapp
 
-      - name: "Deploy to Azure Web App"
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.app-service-name }}
           slot-name: production
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: ./build/standalone
+          package: ${{ env.working-directory }}/build/standalone
