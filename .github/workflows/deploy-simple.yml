@@ -9,7 +9,7 @@ env:
   APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }} # Ensure this secret is set on GitHub Actions
 
 jobs:
-  builddeploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
