@@ -3,7 +3,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: next-15-app-route
+    image: next-15-app-route-ttss
     ports:
       - "3000:3000"
     volumes:

@@ -25,7 +25,7 @@ jobs:
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
-          
+
       - name: Install Docker Compose
         run: |
           sudo apt-get update
@@ -33,6 +33,9 @@ jobs:
 
       - name: Build Docker image with Docker Compose
         run: docker-compose build
+
+      - name: List Docker images
+        run: docker images
 
       - name: Tag Docker image
         run: docker tag ${{ env.app-service-name }}:latest ${{ env.DOCKER_USERNAME }}/${{ env.app-service-name }}:latest

@@ -31,7 +31,7 @@ jobs:
           pnpm run build
           mv ./build/static ./build/standalone/build
           mv ./public ./build/standalone
-          
+
       - name: List build directory contents
         run: ls -R ./build
 
@@ -47,6 +47,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.app-service-name }}
-          slot-name: "Production"
+          slot-name: production
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
           package: ./build/standalone
