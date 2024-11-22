@@ -1,16 +1,3 @@
-# version: '3.8'
-
-# services:
-#   web:
-#     build: .
-#     ports:
-#       - "3000:3000"
-#     environment:
-#       NODE_ENV: production
-#     volumes:
-#       - .:/app
-#     command: pnpm start
-
 services:
   web:
     build:
@@ -19,3 +6,5 @@ services:
     image: next-15-app-route
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
