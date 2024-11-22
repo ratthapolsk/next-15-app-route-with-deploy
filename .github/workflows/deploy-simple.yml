@@ -6,7 +6,7 @@ on:
 env:
   working-directory: .
   app-service-name: next-15-app-route-ttss # Ensure this matches your Azure app service name
-  APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }} # Ensure this secret is set on github actions
+  APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }} # Ensure this secret is set on GitHub Actions
 
 jobs:
   build:
@@ -35,14 +35,14 @@ jobs:
         working-directory: ${{ env.working-directory }}
 
       - name: List build directory contents
-        run: ls -R ${{ env.working-directory }}
+        run: ls -R ${{ env.working-directory }}/build
         working-directory: ${{ env.working-directory }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: webapp
-          path: ${{ env.working-directory }}/build
+          path: ${{ env.working-directory }}/build/standalone/** # Include all files in the standalone folder
           retention-days: 1
 
   deploy:
@@ -58,8 +58,14 @@ jobs:
         with:
           name: webapp
 
+      - name: Move downloaded files to the correct directory
+        run: |
+          mkdir -p ${{ env.working-directory }}/build/standalone
+          mv standalone/* ${{ env.working-directory }}/build/standalone/
+        working-directory: ${{ env.working-directory }}
+
       - name: List downloaded directory contents
-        run: ls -R ${{ env.working-directory }}
+        run: ls -R ${{ env.working-directory }}/build
         working-directory: ${{ env.working-directory }}
 
       - name: Deploy to Azure Web App
