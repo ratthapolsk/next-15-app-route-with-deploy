@@ -35,7 +35,7 @@ jobs:
         working-directory: ${{ env.working-directory }}
 
       - name: List build directory contents
-        run: ls -R ${{ env.working-directory }}/build
+        run: ls -R ${{ env.working-directory }}
         working-directory: ${{ env.working-directory }}
 
       - name: Upload build artifacts
@@ -57,15 +57,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: webapp
+      
+      - name: List downloaded directory contents
+        run: ls -R ${{ env.working-directory }}
+        working-directory: ${{ env.working-directory }}
 
       - name: Move downloaded files to the correct directory
         run: |
           mkdir -p ${{ env.working-directory }}/build/standalone
           mv ${{ env.working-directory }}/standalone/* ${{ env.working-directory }}/build/standalone/
-        working-directory: ${{ env.working-directory }}
-
-      - name: List downloaded directory contents
-        run: ls -R ${{ env.working-directory }}/build
         working-directory: ${{ env.working-directory }}
 
       - name: Deploy to Azure Web App
