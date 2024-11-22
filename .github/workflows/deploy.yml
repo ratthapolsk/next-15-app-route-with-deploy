@@ -1,0 +1,43 @@
+name: "Deploy"
+
+on:
+  workflow_dispatch:
+
+env:
+  working-directory: .
+  resource-group: my-resource-group # Ensure this matches your Azure resource group
+  app-service-name: my-app-service-name # Ensure this matches your Azure app service name
+  APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }} # Ensure this secret is set on github actions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x" # Ensure this is the desired Node.js version
+
+      - name: Enable Corepack and Install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies, build, and prepare deployment
+        run: |
+          pnpm install
+          pnpm run build
+          mv ./build/static ./build/standalone/build # Ensure these paths are correct
+          mv ./public ./build/standalone
+
+      - name: "Deploy to Azure Web App"
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.app-service-name }}
+          slot-name: "Production"
+          publish-profile: ${{ env.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+          package: ./build/standalone # Ensure this path is correct

@@ -1,9 +1,10 @@
 {
-  "name": "next-15-app-route",
+  "name": "next-15-app-route-with-deploy",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev -p 3011 --turbopack",
+    "dev:https": "next dev -p 3011 --turbopack --experimental-https",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
