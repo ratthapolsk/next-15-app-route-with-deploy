@@ -12,7 +12,7 @@
 #     command: pnpm start
 
 services:
-  next-15-app-route:
+  web:
     build:
       context: ./
       dockerfile: Dockerfile
