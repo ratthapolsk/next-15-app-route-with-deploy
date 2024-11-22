@@ -5,8 +5,7 @@ on:
 
 env:
   working-directory: .
-  resource-group: my-resource-group # Ensure this matches your Azure resource group
-  app-service-name: my-app-service-name # Ensure this matches your Azure app service name
+  app-service-name: next-15-app-route-ttss # Ensure this matches your Azure app service name
   APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }} # Ensure this secret is set on github actions
 
 jobs:
@@ -26,12 +25,19 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
-      - name: Install dependencies, build, and prepare deployment
+      - name: Install dependencies and build
         run: |
           pnpm install
           pnpm run build
           mv ./build/static ./build/standalone/build # Ensure these paths are correct
           mv ./public ./build/standalone
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
 
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp

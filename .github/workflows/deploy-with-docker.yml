@@ -5,8 +5,7 @@ on:
 
 env:
   working-directory: .
-  resource-group: my-resource-group
-  app-service-name: my-app-service-name
+  app-service-name: next-15-app-route-ttss
   APPLICATION_PUBLISH_PROFILE: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -36,8 +35,12 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: docker push ${{ env.DOCKER_USERNAME }}/${{ env.app-service-name }}:latest
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
       - name: "Deploy to Azure Web App"
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.app-service-name }}
